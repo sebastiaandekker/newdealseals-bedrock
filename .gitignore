@@ -28,6 +28,7 @@ wp-cli.local.yml
 !web/app/plugins/bloom
 !web/app/plugins/polylang-pro
 !web/app/plugins/wordpress-seo-premium
+!web/app/plugins/wpdatatables
 
 # Other
 .DS_Store
