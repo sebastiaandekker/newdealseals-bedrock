@@ -27,6 +27,7 @@ wp-cli.local.yml
 # Plugins
 !web/app/plugins/bloom
 !web/app/plugins/polylang-pro
+!web/app/plugins/wordpress-seo-premium
 
 # Other
 .DS_Store
