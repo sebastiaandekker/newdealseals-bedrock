@@ -173,8 +173,9 @@ function et_divi_fonts_url() {
 
 		$protocol = is_ssl() ? 'https' : 'http';
 		$query_args = array(
-			'family' => implode( '%7C', $font_families ),
-			'subset' => 'latin,latin-ext',
+			'family'  => implode( '%7C', $font_families ),
+			'subset'  => 'latin,latin-ext',
+			'display' => 'swap',
 		);
 		$fonts_url = add_query_arg( $query_args, "$protocol://fonts.googleapis.com/css" );
 	}
@@ -311,7 +312,7 @@ add_action( 'wp_enqueue_scripts', 'et_divi_load_scripts_styles' );
  */
 function et_divi_replace_stylesheet() {
 	// Apply to Custom Post Types when Builder used only.
-	if ( ! et_builder_is_custom_post_type_archive() && ( ! et_builder_post_is_of_custom_post_type( get_the_ID() ) || ! et_pb_is_pagebuilder_used( get_the_ID() ) ) ) {
+	if ( is_search() || ! et_builder_is_custom_post_type_archive() && ( ! et_builder_post_is_of_custom_post_type( get_the_ID() ) || ! et_pb_is_pagebuilder_used( get_the_ID() ) ) ) {
 		return;
 	}
 
@@ -4460,7 +4461,7 @@ function et_divi_add_customizer_css() {
 					 color: <?php echo esc_html( $button_text_color_hover ); ?> !important;
 				<?php } ?>
 				<?php if ( 'rgba(255,255,255,0.2)' !== $button_bg_color_hover ) { ?>
-					background: <?php echo esc_html( $button_bg_color_hover ); ?> !important;
+					background-color: <?php echo esc_html( $button_bg_color_hover ); ?> !important;
 				<?php } ?>
 				<?php if ( 'rgba(0,0,0,0)' !== $button_border_color_hover ) { ?>
 					border-color: <?php echo esc_html( $button_border_color_hover ); ?> !important;
@@ -6564,13 +6565,22 @@ function et_divi_customize_preview_class( $classes ) {
 add_filter( 'body_class', 'et_divi_customize_preview_class' );
 
 function et_modify_shop_page_columns_num( $columns_num ) {
-	$default_sidebar_class = is_rtl() ? 'et_left_sidebar' : 'et_right_sidebar';
-
-	if ( class_exists( 'woocommerce' ) && is_shop() ) {
-		$columns_num = 'et_full_width_page' !== et_get_option( 'divi_shop_page_sidebar', $default_sidebar_class )
-			? 3
-			: 4;
+	if ( ! et_is_woocommerce_plugin_active() ) {
+		return $columns_num;
 	}
+
+	// WooCommerce plugin active check ensures that archive function can be used.
+	$is_archive_page = is_shop() || is_product_category() || is_product_tag();
+
+	if ( ! $is_archive_page ) {
+		return $columns_num;
+	}
+
+	$default_sidebar_class  = is_rtl() ? 'et_left_sidebar' : 'et_right_sidebar';
+	$divi_shop_page_sidebar = et_get_option( 'divi_shop_page_sidebar', $default_sidebar_class );
+
+	// Assignment is intentional for readability.
+	$columns_num = 'et_full_width_page' === $divi_shop_page_sidebar ? 4 : 3;
 
 	return $columns_num;
 }
