@@ -53,8 +53,6 @@
     "deliciousbrains-plugin/wp-migrate-db-pro": "^1.9",
     "deliciousbrains-plugin/wp-migrate-db-pro-media-files": "*",
     "deliciousbrains-plugin/wp-migrate-db-pro-theme-plugin-files": "*",
-    "wpackagist-plugin/tablepress": "^1.11",
-    "wpackagist-plugin/bulk-image-alt-text-with-yoast": "^1.4",
     "wpackagist-plugin/duplicate-post": "^3.2"
   },
   "require-dev": {
