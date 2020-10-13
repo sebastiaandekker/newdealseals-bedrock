@@ -135,12 +135,6 @@ jQuery.fn.extend({
          */
         $('.card-header:eq(0) > *').not('img, h2, ul.actions, button#wdt-table-id, .clear').prependTo('div.wdt-datatables-admin-wrap');
 
-        /**
-         * Attach waves to buttons
-         */
-        Waves.attach(".btn:not(.btn-icon):not(.btn-float):not(.dropdown-toggle):not(.wdt-checkbox-filter)");
-        Waves.attach(".btn-icon, .btn-float", ["waves-circle", "waves-float"]);
-        Waves.init();
 
         /**
          * Attach tooltips
@@ -191,8 +185,85 @@ jQuery.fn.extend({
             $('#wdt-backend-close-modal').modal('show');
 
             $('#wdt-backend-close-button').click(function() {
-                $(location).attr('href', wdtDashboard.siteUrl);
+                $(location).attr('href', wdtWpDataTablesPage.browseTablesUrl);
             });
+        });
+
+        $('button.wdt-backend-chart-close').click(function(){
+            $('#wdt-backend-close-modal').modal('show');
+
+            $('#wdt-backend-close-button').click(function() {
+                $(location).attr('href', wdtWpDataTablesPage.browseChartsUrl);
+            });
+        });
+
+        $(".wpdt-c .wdt-datatables-admin-wrap div.toggle-switch input[hidden='hidden']").each(function (index,value){
+            $(this).removeAttr("hidden")
+        });
+
+
+        /**
+         * Get only text when copy shortcode from browse
+         */
+
+        $('.wpdt-c').on('click', '.wdt-copy-shortcode-browse', function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var $temp = $("<input>");
+            $($temp).insertAfter($(this));
+            $temp.val($(this).data('shortcode')).select();
+            document.execCommand("copy");
+            $temp.remove();
+            wdtNotify(
+                wpdatatables_edit_strings.success,
+                wpdatatables_edit_strings.shortcodeSaved,
+                'success'
+            );
+        });
+
+        /**
+         * Logic for plus and minus button on number input field
+         */
+        $('.wdt-btn-number').on("click",function(e){
+            e.preventDefault();
+
+            var fieldName = $(this).attr('data-field');
+            var type      = $(this).attr('data-type');
+            var input = $("input[name='"+fieldName+"']");
+            var currentVal = parseInt(input.val());
+            if (!isNaN(currentVal)) {
+                if(type == 'minus') {
+
+                    if(currentVal > input.attr('min')) {
+                        input.val(currentVal - 1).change();
+                    }
+                    if(parseInt(input.val()) == input.attr('min')) {
+                        $(this).attr('disabled', true);
+                    }
+
+                } else if(type == 'plus') {
+                    input.val(currentVal + 1).change();
+                    $('.wdt-button-minus').attr('disabled', false);
+                }
+            } else {
+                input.val(0);
+            }
+        });
+        $(".input-number").on("keydown", function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                // Allow: Ctrl+A
+                (e.keyCode == 65 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
         });
 
         /**
@@ -203,8 +274,9 @@ jQuery.fn.extend({
             e.stopImmediatePropagation();
 
             var $temp = $("<input>");
+            var $shortcodeType = $(this).data('shortcode-type');
             $($temp).insertAfter($(this));
-            $temp.val($(this).text()).select();
+            $temp.val($('#wdt-' + $shortcodeType + '-shortcode-id').text()).select();
             document.execCommand("copy");
             $temp.remove();
             wdtNotify(
@@ -240,6 +312,7 @@ jQuery.fn.extend({
             0 == !i.length && $(this).closest(".fg-line").addClass("fg-toggled")
         })
 
+
     });
 
 })(jQuery);
@@ -255,8 +328,9 @@ jQuery(window).on('load', function(){
  * Show preloader before leaving the page
  */
 window.onbeforeunload = function(e) {
-    jQuery('.wdt-preload-layer').animateFadeIn();
+     if (window.reportbuilderobj == 'undifined') jQuery('.wdt-preload-layer').animateFadeIn();
 };
+
 
 /**
  * Growl notification in the right top corner
@@ -276,14 +350,14 @@ function wdtNotify(title, message, type) {
         type = 'info';
     }
 
-    var icon = 'fa fa-check';
+
     switch (type) {
         case 'danger':
-            icon = 'fa fa-exclamation-triangle';
+            icon = 'wpdt-icon-exclamation-triangle';
             break;
         case 'success':
         default:
-            icon = 'fa fa-check';
+            icon = 'wpdt-icon-check-circle-full';
             break;
     }
 
@@ -315,9 +389,7 @@ function wdtNotify(title, message, type) {
             exit: 'animated fadeOut'
         },
         icon_type: 'class',
-        template: '<div data-growl="container" class="wpdt-c alert" role="alert">' +
-          '<button type="button" class="close" data-growl="dismiss">' +
-          '<span aria-hidden="true">&times;</span>' +
+        template: '<div data-growl="container" class="wpdt-c alert" role="alert">'+
           '<span class="sr-only">' + wpdatatables_edit_strings.close + '</span>' +
           '</button>' +
           '<span data-growl="icon"></span>' +

@@ -32,7 +32,7 @@ class WDTBrowseTable extends WP_List_Table {
             'table_type' => 'Type',
             'connection' => 'Connection',
             'shortcode' => 'Shortcode',
-            'functions' => 'Functions'
+            'functions' => ''
         );
     }
 
@@ -170,31 +170,31 @@ class WDTBrowseTable extends WP_List_Table {
     function column_default($item, $column_name) {
         switch ($column_name) {
             case 'shortcode':
-                return '<span class="wdt-shortcode bgm-green">[wpdatatable id=' . $item['id'] . ']</span>';
+                return '<a class="wdt-copy-shortcode-browse" data-toggle="tooltip" data-shortcode="[wpdatatable id=' . $item['id'] . ']" data-placement="top"  title="' . __('Click to copy shortcode', 'wpdatatables') . '"><i class="wpdt-icon-copy"></i></a><span class="wdt-shortcode">[wpdatatable id=' . $item['id'] . ']</span>';
                 break;
             case 'functions':
                 $return_string = '';
                 if (in_array($item['table_type'], WPDataTable::$allowedTableTypes)) {
-                    $return_string = '<a type="button" 
+                    $return_string = '<div class="wdt-function-flex"><a type="button" 
                                          class="wdt-duplicate-table" 
                                          data-table_id="' . $item['id'] . '" 
                                          data-table_name="' . $item['title'] . '" 
                                          data-table_type="' . $item['table_type'] . '" 
-                                         data-toggle="tooltip" title="' . __('Duplicate', 'wpdatatables') . '" href="#"></a>';
+                                         data-toggle="tooltip" title="' . __('Duplicate', 'wpdatatables') . '" href="#"><i class="wpdt-icon-clone"></i></a>';
                     if ($item['editable'] == 1) {
                         $return_string .= '<a type="button" 
                                               class="wdt-manual-edit" 
                                               data-table_id="' . $item['id'] . '" 
                                               data-table_name="' . $item['title'] . '"  
                                               data-toggle="tooltip" title="' . __('Edit data', 'wpdatatables') . '" 
-                                              href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '&collapsed"><i class="zmdi zmdi-edit"></i></a>';
+                                              href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '&collapsed"><i class="wpdt-icon-pen"></i></a>';
 
                         $return_string .= '<a type="button" 
                                               class="wdt-manual-excel-edit" 
                                               data-table_id="' . $item['id'] . '" 
                                               data-table_name="' . $item['title'] . '" 
                                               data-toggle="tooltip" title="' . __('Edit in Excel-like editor', 'wpdatatables') . '" 
-                                              href="admin.php?page=wpdatatables-constructor&source&table_view=excel&table_id=' . $item['id'] . '&collapsed"></a>';
+                                              href="admin.php?page=wpdatatables-constructor&source&table_view=excel&table_id=' . $item['id'] . '&collapsed"><i class="wpdt-icon-table"></i></a>';
                     }
 
                     $return_string .= ' <a type="button" 
@@ -202,14 +202,14 @@ class WDTBrowseTable extends WP_List_Table {
                                             data-table_id="' . $item['id'] . '" 
                                             data-table_name="' . $item['title'] . '" 
                                             data-toggle="tooltip" title="' . __('Configure', 'wpdatatables') . '" 
-                                            href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '" ><i class="zmdi zmdi-settings"></i></a>';
+                                            href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '" ><i class="wpdt-icon-cog"></i></a>';
                 }
                 $return_string .= ' <a type="button" 
                                        class="wdt-submit-delete" 
                                        data-table_id="' . $item['id'] . '" 
                                        data-table_name="' . $item['title'] . '" 
                                        data-toggle="tooltip" title="' . __('Delete', 'wpdatatables') . '" 
-                                       href="' . wp_nonce_url('admin.php?page=wpdatatables-administration&action=delete&table_id=' . $item['id'] . '', 'wdtDeleteTableNonce', 'wdtNonce') . '" rel="' . $item['id'] . '"><i class="zmdi zmdi-delete"></i></a>';
+                                       href="' . wp_nonce_url('admin.php?page=wpdatatables-administration&action=delete&table_id=' . $item['id'] . '', 'wdtDeleteTableNonce', 'wdtNonce') . '" rel="' . $item['id'] . '"><i class="wpdt-icon-trash"></i></a></div>';
                 return $return_string;
                 break;
             case 'id':
@@ -227,12 +227,12 @@ class WDTBrowseTable extends WP_List_Table {
      */
     function column_title($item) {
         if (in_array($item['table_type'], WPDataTable::$allowedTableTypes)) {
-            $actions = array(
-                'edit' => '<a href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '" title="' . __('Configure', 'wpdatatables') . '">' . __('Configure', 'wpdatatables') . '</a>',
-                'trash' => '<a class="wdt-submit-delete" title="' . __('Delete', 'wpdatatables') . '" href="' . wp_nonce_url('admin.php?page=wpdatatables-administration&action=delete&table_id=' . $item['id'] . '', 'wdtDeleteTableNonce', 'wdtNonce') . '" rel="' . $item['id'] . '">' . __('Delete', 'wpdatatables') . '</a>'
-            );
+//            $actions = array(
+//                'edit' => '<a href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '" title="' . __('Configure', 'wpdatatables') . '">' . __('Configure', 'wpdatatables') . '</a>',
+//                'trash' => '<a class="wdt-submit-delete" title="' . __('Delete', 'wpdatatables') . '" href="' . wp_nonce_url('admin.php?page=wpdatatables-administration&action=delete&table_id=' . $item['id'] . '', 'wdtDeleteTableNonce', 'wdtNonce') . '" rel="' . $item['id'] . '">' . __('Delete', 'wpdatatables') . '</a>'
+//            );
 
-            return '<a href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '">' . $item['title'] . '</a> ' . $this->row_actions($actions);
+            return '<a href="admin.php?page=wpdatatables-constructor&source&table_id=' . $item['id'] . '">' . $item['title'] . '</a> ';
         } else {
             return $item['title'];
         }
@@ -246,41 +246,41 @@ class WDTBrowseTable extends WP_List_Table {
     function column_table_type($item) {
         switch ($item['table_type']) {
             case 'mysql':
-                return '<span class="wpdt-type-column bgm-gray">' . __('SQL', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('SQL', 'wpdatatables') . '</span>';
                 break;
             case 'mssql':
-                return '<span class="wpdt-type-column bgm-gray">' . __('SQL', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('SQL', 'wpdatatables') . '</span>';
                 break;
             case 'postgresql':
-                return '<span class="wpdt-type-column bgm-gray">' . __('SQL', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('SQL', 'wpdatatables') . '</span>';
                 break;
             case 'manual':
-                return '<span class="wpdt-type-column bgm-gray">' . __('Manual', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('Manual', 'wpdatatables') . '</span>';
                 break;
             case 'xls':
-                return '<span class="wpdt-type-column bgm-gray">' . __('Excel', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('Excel', 'wpdatatables') . '</span>';
                 break;
             case 'csv':
-                return '<span class="wpdt-type-column bgm-gray">' . __('CSV', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('CSV', 'wpdatatables') . '</span>';
                 break;
             case 'xml':
-                return '<span class="wpdt-type-column bgm-gray">' . __('XML', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('XML', 'wpdatatables') . '</span>';
                 break;
             case 'json':
-                return '<span class="wpdt-type-column bgm-gray">' . __('JSON', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('JSON', 'wpdatatables') . '</span>';
                 break;
             case 'serialized':
-                return '<span class="wpdt-type-column bgm-gray">' . __('Serialized PHP array', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('Serialized PHP array', 'wpdatatables') . '</span>';
                 break;
             case 'google_spreadsheet':
-                return '<span class="wpdt-type-column bgm-gray">' . __('Google spreadsheet', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('Google spreadsheet', 'wpdatatables') . '</span>';
                 break;
             default:
                 if (in_array($item['table_type'], WPDataTable::$allowedTableTypes)) {
-                    return '<span class="wpdt-type-column bgm-gray">' . ucfirst($item['table_type']) . '</span>';
+                    return '<span class="wpdt-type-column">' . ucfirst($item['table_type']) . '</span>';
                 }
 
-                return '<span class="wpdt-type-column bgm-gray">' . __('Unknown', 'wpdatatables') . '</span>';
+                return '<span class="wpdt-type-column">' . __('Unknown', 'wpdatatables') . '</span>';
                 break;
         }
     }
@@ -291,7 +291,7 @@ class WDTBrowseTable extends WP_List_Table {
      * @return string
      */
     function column_connection($item) {
-        return $item['connection'] ? '<span class="wpdt-type-column bgm-gray">' . $item['connection'] . '</span>' : '';
+        return $item['connection'] ? '<span class="wpdt-type-column">' . $item['connection'] . '</span>' : '';
     }
 
     /**
@@ -325,7 +325,7 @@ class WDTBrowseTable extends WP_List_Table {
         if (!empty($columns['cb'])) {
             static $cb_counter = 1;
             $columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __('Select All') . '</label>'
-                . '<div class="checkbox"><input id="cb-select-all-' . $cb_counter . '" type="checkbox" /><i class="input-helper"></i></div>';
+                . '<div class="checkbox"><input id="cb-select-all-' . $cb_counter . '" type="checkbox" /></div>';
             $cb_counter++;
         }
 
@@ -354,7 +354,7 @@ class WDTBrowseTable extends WP_List_Table {
                     $class[] = $current_order;
                 } else {
                     $order = $desc_first ? 'desc' : 'asc';
-                    $class[] = 'sortable';
+                    $class[] = ($current_orderby == '' && $column_key == 'id' ) ? 'sorted' : 'sortable';
                     $class[] = $desc_first ? 'asc' : 'desc';
                 }
 
@@ -388,7 +388,7 @@ class WDTBrowseTable extends WP_List_Table {
      */
     function column_cb($item) {
         return sprintf(
-            '<div class="checkbox"><input type="checkbox" name="table_id[]" value="%s" /><i class="input-helper"></i></div>', $item['id']
+            '<div class="checkbox"><input type="checkbox" name="table_id[]" value="%s" /></div>', $item['id']
         );
     }
 

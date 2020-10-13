@@ -441,8 +441,10 @@ function wdtConstructorGetMySqlTableColumns()
     if (isset($_POST['tables'])){
         $tables = array_map('sanitize_text_field', $_POST['tables']);
         $columns = wpDataTableConstructor::listMySQLColumns($tables, $_POST['connection']);
-        echo json_encode($columns);
+    } else {
+        $columns = array('allColumns' => array(), 'sortedColumns' => array());
     }
+    echo json_encode($columns);
     exit();
 }
 

@@ -1,18 +1,18 @@
 <?php
 /**
  * @package wpDataTables
- * @version 2.8.3
+ * @version 3.0.4
  */
 /*
 Plugin Name: wpDataTables
-Plugin URI: http://tms-plugins.com
+Plugin URI: https://wpdatatables.com/
 Description: Add interactive tables easily from any input source
 //[<-- Full version -->]//
-Version: 2.8.3
+Version: 3.0.4
 //[<--/ Full version -->]//
 //[<-- Full version insertion #27 -->]//
 Author: TMS-Plugins
-Author URI: http://tms-plugins.com
+Author URI: https://tms-outsource.com/
 Text Domain: wpdatatables
 Domain Path: /languages
 */

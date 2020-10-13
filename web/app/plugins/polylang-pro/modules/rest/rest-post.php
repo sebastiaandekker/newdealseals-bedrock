@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang-Pro
+ */
 
 /**
  * Expose terms language and translations in the REST API
@@ -22,6 +25,7 @@ class PLL_REST_Post extends PLL_REST_Translated_Object {
 		$this->id   = 'ID';
 
 		add_action( 'parse_query', array( $this, 'parse_query' ), 1 );
+		add_action( 'add_attachment', array( $this, 'set_media_language' ) );
 
 		foreach ( array_keys( $content_types ) as $post_type ) {
 			add_filter( "rest_prepare_{$post_type}", array( $this, 'prepare_response' ), 10, 3 );
@@ -96,6 +100,10 @@ class PLL_REST_Post extends PLL_REST_Translated_Object {
 	 */
 	public function get_rest_query_params( $result, $server, $request ) {
 		if ( current_user_can( 'edit_posts' ) && null !== $request->get_param( 'is_block_editor' ) ) {
+			// When it's a post request on a new post type you need to save the language really chosen by the user before any process. Fix #505
+			if ( $this->is_save_post_request( $request->get_param( 'id' ), $request ) && ! empty( $request->get_param( 'lang' ) ) ) {
+				$this->model->post->set_language( $request->get_param( 'id' ), $request->get_param( 'lang' ) );
+			}
 			foreach ( array_keys( $this->content_types ) as $post_type ) {
 				register_rest_field(
 					$this->get_rest_field_type( $post_type ),
@@ -112,6 +120,35 @@ class PLL_REST_Post extends PLL_REST_Translated_Object {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Check if the request is a REST API post type request for saving
+	 *
+	 * @since 2.7.3
+	 *
+	 * @param string          $post_id The post id.
+	 * @param WP_REST_Request $request Request used to generate the response.
+	 * @return boolean True if the request saves a post.
+	 */
+	public function is_save_post_request( $post_id, $request ) {
+		$post_type_rest_bases = wp_list_pluck( get_post_types( array( 'show_in_rest' => true ), 'objects' ), 'rest_base' );
+
+		// Some rest_base could be not defined and WordPress return false. The post type name is taken as rest_base.
+		$post_type_rest_bases = array_merge(
+			array_filter( $post_type_rest_bases ), // Get rest_base really defined.
+			array_keys(  // Otherwise rest_base equals to the post type name.
+				array_filter(
+					$post_type_rest_bases,
+					function( $value ) {
+						return ! $value;
+					}
+				)
+			)
+		);
+		// Pattern to verify the request route.
+		$post_type_pattern = '#(' . implode( '|', array_values( $post_type_rest_bases ) ) . ')/' . $request->get_param( 'id' ) . '#';
+		return preg_match( "$post_type_pattern", $request->get_route() ) && 'PUT' === $request->get_method();
 	}
 
 	/**
@@ -162,5 +199,21 @@ class PLL_REST_Post extends PLL_REST_Translated_Object {
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Set the language to the edited media
+	 *
+	 * When a media is edited in the block image, a new media is created and we need to set the language from the original one.
+	 *
+	 * @see new WordPress 5.5 feature https://make.wordpress.org/core/2020/07/20/editing-images-in-the-block-editor/
+	 * @since 2.8
+	 *
+	 * @param int $post_id
+	 */
+	public function set_media_language( $post_id ) {
+		if ( ! empty( $this->params['id'] ) && $post_id !== $this->params['id'] ) {
+			$this->model->post->set_language( $post_id, $this->model->post->get_language( $this->params['id'] ) );
+		}
 	}
 }

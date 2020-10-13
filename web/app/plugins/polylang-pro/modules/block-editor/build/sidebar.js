@@ -109,6 +109,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../settings */ "./modules/block-editor/js/sidebar/settings.js");
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -178,6 +180,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -221,6 +225,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_edit_post__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_edit_post__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/**
+ * @package Polylang-Pro
+ */
+
 
 
 
@@ -280,6 +288,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -527,6 +537,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _metabox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../metabox */ "./modules/block-editor/js/sidebar/components/metabox/index.js");
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -573,10 +585,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
 
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
+
 
 
 
@@ -606,7 +623,23 @@ var Switcher = function Switcher(props) {
 			wp.element.createElement(
 				'span',
 				{ className: 'pll-select-flag' },
-				wp.element.createElement('img', { src: props.selectedLanguage.flag_url, alt: props.selectedLanguage.name, title: props.selectedLanguage.name, className: 'flag' })
+				!Object(lodash__WEBPACK_IMPORTED_MODULE_3__["isEmpty"])(props.selectedLanguage.flag_url) ? wp.element.createElement(
+					'span',
+					{ className: 'pll-select-flag' },
+					wp.element.createElement('img', { src: props.selectedLanguage.flag_url,
+						alt: props.selectedLanguage.name,
+						title: props.selectedLanguage.name,
+						className: 'flag' })
+				) : wp.element.createElement(
+					'abbr',
+					null,
+					props.selectedLanguage.slug,
+					wp.element.createElement(
+						'span',
+						{ className: 'screen-reader-text' },
+						props.selectedLanguage.name
+					)
+				)
 			),
 			wp.element.createElement(
 				'select',
@@ -658,6 +691,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _synchronization_modal_content__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./synchronization-modal-content */ "./modules/block-editor/js/sidebar/components/synchronization-button/synchronization-modal-content.js");
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -771,6 +806,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -899,6 +936,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * External dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -1293,6 +1332,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * WordPress dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -1375,12 +1416,21 @@ var TranslationsTable = function TranslationsTable(_ref2) {
 						wp.element.createElement(
 							'th',
 							{ className: 'pll-language-column' },
-							wp.element.createElement(
+							!Object(lodash__WEBPACK_IMPORTED_MODULE_3__["isEmpty"])(translationData.lang.flag) ? wp.element.createElement(
 								'span',
 								{ className: 'pll-select-flag flag' },
 								wp.element.createElement('img', { src: translationData.lang.flag_url,
 									alt: translationData.lang.name,
 									title: translationData.lang.name })
+							) : wp.element.createElement(
+								'abbr',
+								null,
+								translationData.lang.slug,
+								wp.element.createElement(
+									'span',
+									{ className: 'screen-reader-text' },
+									translationData.lang.name
+								)
 							)
 						),
 						wp.element.createElement(
@@ -1480,6 +1530,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Import styles
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -1709,6 +1761,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_STATE", function() { return DEFAULT_STATE; });
 /**
  * Module Constants
+ *
+ * @package Polylang-Pro
  */
 
 var MODULE_KEY = 'pll/metabox';
@@ -1751,6 +1805,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * WordPress Dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -1963,6 +2019,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * WordPress Dependencies
+ *
+ * @package Polylang-Pro
  */
 
 
@@ -6725,4 +6783,3 @@ module.exports = _extends({
 /***/ })
 
 /******/ });
-//# sourceMappingURL=sidebar.js.map

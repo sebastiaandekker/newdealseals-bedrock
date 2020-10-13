@@ -63,7 +63,7 @@ function wdtActivationCreateTables() {
 						orig_header varchar(255) NOT NULL,
 						display_header varchar(255) NOT NULL,
 						filter_type enum('none','null_str','text','number','number-range','date-range','datetime-range','time-range','select','multiselect','checkbox') NOT NULL,
-						column_type enum('autodetect','string','int','float','date','link','email','image','formula','datetime','time') NOT NULL,
+						column_type enum('autodetect','string','int','float','date','link','email','image','formula','datetime','time','masterdetail') NOT NULL,
 						input_type enum('none','text','textarea','mce-editor','date','datetime','time','link','email','selectbox','multi-selectbox','attachment') NOT NULL default 'text',
 						input_mandatory tinyint(1) NOT NULL default '0',
                         id_column tinyint(1) NOT NULL default '0',
@@ -177,6 +177,12 @@ function wdtActivationCreateTables() {
     if (!get_option('wdtMobileWidth')) {
         update_option('wdtMobileWidth', 480);
     }
+    if (get_option('wdtGettingStartedPageStatus') === false) {
+        update_option('wdtGettingStartedPageStatus', 0 );
+    }
+    if (get_option('wdtLiteVSPremiumPageStatus') === false) {
+        update_option('wdtLiteVSPremiumPageStatus', 0 );
+    }
     if (get_option('wdtIncludeBootstrap') === false) {
         update_option('wdtIncludeBootstrap', true);
     }
@@ -270,6 +276,8 @@ function wdtUninstallDelete() {
         delete_option('wdtSumFunctionsLabel');
         delete_option('wdtRenderFilter');
         delete_option('wdtRenderCharts');
+        delete_option('wdtGettingStartedPageStatus');
+        delete_option('wdtLiteVSPremiumPageStatus');
         delete_option('wdtIncludeBootstrap');
         delete_option('wdtIncludeBootstrapBackEnd');
         delete_option('wdtPreventDeletingTables');
@@ -672,7 +680,7 @@ function wdtRenderScriptStyleBlock($connection) {
     $wpDataTable = new WPDataTable($connection);
 
     if ($customJs) {
-        $scriptBlockHtml .= '<script type="text/javascript">' . stripslashes_deep($customJs) . '</script>';
+        $scriptBlockHtml .= '<script type="text/javascript">' . stripslashes_deep(html_entity_decode($customJs)) . '</script>';
     }
     $returnHtml = $scriptBlockHtml;
 
@@ -741,6 +749,9 @@ function wdtSanitizeQuery($query) {
     return $query;
 }
 
+/**
+ * Init wpDataTabes block for Gutenberg
+ */
 function initGutenbergBlocks (){
     WpDataTablesGutenbergBlock::init();
     WpDataChartsGutenbergBlock::init();
@@ -749,7 +760,7 @@ function initGutenbergBlocks (){
 add_action('plugins_loaded', 'initGutenbergBlocks');
 
 /**
- * Creating Amelia block category in Gutenberg
+ * Creating wpDataTables block category in Gutenberg
  */
 function addWpDataTablesBlockCategory ($categories, $post) {
     return array_merge(
@@ -950,6 +961,21 @@ function wdtAddMessageOnUpdate($reply, $package, $updater) {
 }
 
 add_filter('upgrader_pre_download', 'wdtAddMessageOnUpdate', 10, 4);
+
+/**
+ * Redirect on Welcome page after activate plugin
+ */
+function welcome_page_activation_redirect( $plugin ) {
+    $filePath = plugin_basename(__FILE__);
+    $filePathArr = explode('/', $filePath);
+    $wdtPluginSlug = $filePathArr[0] . '/wpdatatables.php';
+
+    if( $plugin == plugin_basename( $wdtPluginSlug ) ) {
+        exit( wp_redirect( admin_url( 'admin.php?page=wpdatatables-welcome-page' ) ) );
+    }
+}
+
+add_action( 'activated_plugin', 'welcome_page_activation_redirect' );
 
 /**
  * Optional Visual Composer integration

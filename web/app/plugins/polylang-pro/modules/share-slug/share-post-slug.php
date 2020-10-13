@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang-Pro
+ */
 
 /**
  * Base class to manage shared slugs for posts
@@ -200,7 +203,12 @@ class PLL_Share_Post_Slug {
 			if ( isset( $qv['tax_query'] ) && is_array( $qv['tax_query'] ) ) {
 				foreach ( $qv['tax_query'] as $tax_query ) {
 					if ( isset( $tax_query['taxonomy'] ) && 'language' === $tax_query['taxonomy'] ) {
-						return $this->model->get_language( $tax_query['terms'] );
+						// We can't use directly PLL_Model::get_language() as it doesn't accept a term_taxonomy_id.
+						foreach ( $this->model->get_languages_list() as $lang ) {
+							if ( $lang->term_taxonomy_id === $tax_query['terms'] ) {
+								return $lang;
+							}
+						}
 					}
 				}
 			}

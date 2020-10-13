@@ -71,7 +71,7 @@ class WDTConfigController {
                     $res->wdtHtml = $wpDataTable->generateTable($tableData->connection);
 
                 } catch (Exception $e) {
-                    $res->error = $e->getMessage();
+                    $res->error = ltrim($e->getMessage(), '<br/><br/>');
                 }
             } else {
                 $res->error = $wpdb->last_error;
@@ -117,7 +117,7 @@ class WDTConfigController {
             $res->wdtJsonConfig = json_decode($wpDataTable->getJsonDescription());
             $res->wdtHtml = $wpDataTable->generateTable($tableData->connection);
         } catch (Exception $e) {
-            $res->error = $e->getMessage();
+            $res->error = ltrim($e->getMessage(), '<br/><br/>');
         }
         return $res;
     }
@@ -490,7 +490,7 @@ class WDTConfigController {
             }
             $result->table = $tbl;
         } catch (Exception $e) {
-            $result->error = $e->getMessage();
+            $result->error = ltrim($e->getMessage(), '<br/><br/>');
             return $result;
         }
 

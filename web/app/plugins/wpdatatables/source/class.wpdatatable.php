@@ -1043,6 +1043,13 @@ class WPDataTable {
                         }
                     }
                 }
+                if ($columnType === 'string') {
+                    foreach ($this->_dataRows as &$dataRow) {
+                        if (is_float($dataRow[$key]) || is_int($dataRow[$key])) {
+                            $dataRow[$key] = strval($dataRow[$key]);
+                        }
+                    }
+                }
             }
         }
 
@@ -2719,6 +2726,7 @@ class WPDataTable {
      * @param $tableData
      * @param $columnData
      * @throws WDTException
+     * @throws Exception
      */
     public function fillFromData($tableData, $columnData) {
         if (empty($tableData->table_type)) {
@@ -2869,7 +2877,8 @@ class WPDataTable {
                 );
                 break;
             case 'serialized':
-                $serialized_content = apply_filters('wpdatatables_filter_serialized', WDTTools::curlGetData($tableData->content), $this->_wpId);
+                $url =  apply_filters('wpdatatables_filter_url_php_array', WDTTools::applyPlaceholders($tableData->content), $this->_wpId);
+                $serialized_content = apply_filters('wpdatatables_filter_serialized', WDTTools::curlGetData($url), $this->_wpId);
                 $array = unserialize($serialized_content);
                 $this->arrayBasedConstruct(
                     $array,
@@ -3290,7 +3299,8 @@ class WPDataTable {
                             'extend' => 'print',
                             'exportOptions' => array('columns' => ':visible'),
                             'className' => 'DTTT_button DTTT_button_print',
-                            'text' => __('Print', 'wpdatatables')
+                            'text' => __('Print', 'wpdatatables'),
+                            'title' => $wdtExportFileName
                         );
                 }
 
@@ -3358,7 +3368,8 @@ class WPDataTable {
                             'extend' => 'print',
                             'exportOptions' => array('columns' => ':visible'),
                             'className' => 'DTTT_button DTTT_button_print',
-                            'text' => __('Print', 'wpdatatables')
+                            'text' => __('Print', 'wpdatatables'),
+                            'title' => $wdtExportFileName
                         );
                 }
 

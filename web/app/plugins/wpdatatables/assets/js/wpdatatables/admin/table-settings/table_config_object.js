@@ -115,7 +115,11 @@ var wpdatatable_config = {
      */
     setId: function( id ){
         wpdatatable_config.id = id;
-        jQuery( '#wdt-table-id' ).html( '[wpdatatable id='+id+']' );
+        jQuery( '#wdt-table-id' ).html(
+            ' <a class="wdt-copy-shortcode" data-toggle="tooltip" data-shortcode-type="table" data-placement="top" title="Click to copy shortcode">' +
+            '            <i class="wpdt-icon-copy"></i>' +
+            '        </a>' +
+            '        <span id="wdt-table-shortcode-id">[wpdatatable id='+id+']</span>' );
         if( jQuery( '#wdt-table-id' ).is(':hidden') ){
             jQuery( '#wdt-table-id' ).animateFadeIn();
         }
@@ -419,6 +423,7 @@ var wpdatatable_config = {
             jQuery('#wdt-inline-editable').prop( 'checked', 0 );
             jQuery('.own-rows-editing-settings-block').addClass('hidden');
             jQuery('#wdt-edit-only-own-rows').prop( 'checked', 0 );
+            jQuery('.show-all-rows-editing-settings-block').addClass('hidden');
             jQuery('#wdt-show-all-row').prop( 'checked', 0 );
 
             wpdatatable_config.popover_tools = 0;
@@ -829,7 +834,7 @@ var wpdatatable_config = {
         jQuery('.wdt-preload-layer').animateFadeOut();
         $table.find('thead tr:eq(0) th.wdtheader').each(function(){
             if (wpdatatable_config.columns[wpdatatable_config.dataTable.column( jQuery(this) ).index()].type == 'formula') {
-                var $formulaDeleteButton = jQuery('<button class="btn btn-default pull-right btn-xs waves-effect waves-float wdt-delete-formula-column" data-toggle="tooltip" title="Click to delete formula column"><i class="zmdi zmdi-delete"></i></button>');
+                var $formulaDeleteButton = jQuery('<button class="btn btn-default pull-right btn-xs wdt-delete-formula-column" data-toggle="tooltip" title="Click to delete formula column"><i class="wpdt-icon-trash"></i></button>');
                 $formulaDeleteButton.appendTo(this).click(function(e){
                     var formulaColumn = wpdatatable_config.columns.slice(wpdatatable_config.dataTable.column(jQuery(this).closest('th')).index())[0];
                     for (var i = formulaColumn.pos + 1; i <= wpdatatable_config.columns.length - 1; i++ ) {
@@ -843,7 +848,7 @@ var wpdatatable_config = {
                     jQuery('button.wdt-apply:eq(0)').click();
                 });
             }
-            var $button = jQuery('<button class="btn btn-default pull-right btn-xs waves-effect waves-float wdt-column-settings" data-toggle="tooltip" title="Click to open column settings"><i class="zmdi zmdi-settings"></i></button>');
+            var $button = jQuery('<button class="btn btn-default pull-right btn-xs wdt-column-settings" data-toggle="tooltip" title="Click to open column settings"><i class="wpdt-icon-cog"></i></button>');
             $button.appendTo(this).click(function(e){
                 e.preventDefault();
                 e.stopImmediatePropagation();

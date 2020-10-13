@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package Polylang-Pro
+ */
 
 /**
  * An abstract class to handle cross domain data and single sign on
@@ -175,7 +178,7 @@ abstract class PLL_Xdata_Base {
 		if ( ! empty( $_COOKIE[ PLL_COOKIE ] ) && $_COOKIE[ PLL_COOKIE ] !== $lang ) {
 			$args = array(
 				'action'   => 'pll_xdata_get',
-				'redirect' => $redirect,
+				'redirect' => urlencode( $redirect ),
 				'nonce'    => $this->create_nonce( 'xdata_get' ),
 				'nologin'  => ! empty( $_GET['nologin'] ), // phpcs:ignore WordPress.Security.NonceVerification
 			);

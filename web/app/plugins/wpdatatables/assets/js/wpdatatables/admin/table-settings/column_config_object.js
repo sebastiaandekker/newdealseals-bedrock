@@ -1043,16 +1043,16 @@ WDTColumn.prototype.fillInputs = function () {
     jQuery('#wdt-column-values-add-empty').prop('checked', this.possibleValuesAddEmpty);
 
     jQuery('#wdt-column-calc-total').prop('checked', this.calculateTotal);
-    jQuery('div.wdt-column-calc-total-block #wdt-column-calc-total-shortcode button')
+    jQuery('div.wdt-column-calc-total-block #wdt-column-calc-total-shortcode span')
         .html('[wpdatatable_sum table_id=' + wpdatatable_config.id + ' col_id=' + wpdatatable_config.currentOpenColumn.id + ']');
     jQuery('#wdt-column-calc-avg').prop('checked', this.calculateAvg);
-    jQuery('div.wdt-column-calc-avg-block #wdt-column-calc-avg-shortcode button')
+    jQuery('div.wdt-column-calc-avg-block #wdt-column-calc-avg-shortcode span')
         .html('[wpdatatable_avg table_id=' + wpdatatable_config.id + ' col_id=' + wpdatatable_config.currentOpenColumn.id + ']');
     jQuery('#wdt-column-calc-min').prop('checked', this.calculateMin);
-    jQuery('div.wdt-column-calc-min-block #wdt-column-calc-min-shortcode button')
+    jQuery('div.wdt-column-calc-min-block #wdt-column-calc-min-shortcode span')
         .html('[wpdatatable_min table_id=' + wpdatatable_config.id + ' col_id=' + wpdatatable_config.currentOpenColumn.id + ']');
     jQuery('#wdt-column-calc-max').prop('checked', this.calculateMax);
-    jQuery('div.wdt-column-calc-max-block #wdt-column-calc-max-shortcode button')
+    jQuery('div.wdt-column-calc-max-block #wdt-column-calc-max-shortcode span')
         .html('[wpdatatable_max table_id=' + wpdatatable_config.id + ' col_id=' + wpdatatable_config.currentOpenColumn.id + ']');
 
     if (jQuery.inArray(this.type, ['int', 'float', 'formula']) !== -1) {
@@ -1132,8 +1132,16 @@ WDTColumn.prototype.fillInputs = function () {
                 if(typeof this.editingDefaultValue === 'object') {
                     jQuery('#wdt-editing-default-value-selectpicker').selectpicker('val', this.editingDefaultValue.value);
                 } else {
-                    this.editingDefaultValue = this.editor_type == 'multi-selectbox' && !$.isArray(this.editingDefaultValue) ? this.editingDefaultValue.split('|') : this.editingDefaultValue;
-                    jQuery('#wdt-editing-default-value-selectpicker').selectpicker('val', this.editingDefaultValue);
+                    if (this.editor_type == 'multi-selectbox'){
+                        this.editingDefaultValue =  this.editingDefaultValue.split('|') ;
+                        jQuery('#wdt-editing-default-value-selectpicker').selectpicker('val', this.editingDefaultValue);
+                    } else {
+                        jQuery('#wdt-editing-default-value-selectpicker').selectpicker('val', this.editingDefaultValue);
+                    }
+
+                    if (this.editingDefaultValue instanceof Array) {
+                        this.editingDefaultValue = this.editingDefaultValue.join('|');
+                    }
                 }
             } else {
                 jQuery('#wdt-editing-default-value').val(this.editingDefaultValue);
@@ -1427,21 +1435,15 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.visible = 1;
             jQuery(this)
                 .removeClass('inactive')
-                .removeClass('zmdi-eye-off')
-                .addClass('zmdi-eye');
         } else {
             column.visible = 0;
             jQuery(this)
                 .addClass('inactive')
-                .addClass('zmdi-eye-off')
-                .removeClass('zmdi-eye');
         }
     });
     if (!column.visible) {
         $columnBlock.find('i.toggle-visibility')
             .addClass('inactive')
-            .addClass('zmdi-eye-off')
-            .removeClass('zmdi-eye');
     }
 
     $columnBlock.find('i.wdt-toggle-show-on-mobile').click(function (e) {
@@ -1450,22 +1452,16 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.hide_on_mobiles = 0;
             jQuery(this)
                 .removeClass('inactive')
-                .removeClass('zmdi-smartphone-lock')
-                .addClass('zmdi-smartphone');
         } else {
             column.hide_on_mobiles = 1;
             jQuery(this)
                 .addClass('inactive')
-                .addClass('zmdi-smartphone-lock')
-                .removeClass('zmdi-smartphone');
         }
     });
 
     if (column.hide_on_mobiles) {
         $columnBlock.find('i.wdt-toggle-show-on-mobile')
             .addClass('inactive')
-            .addClass('zmdi-smartphone-lock')
-            .removeClass('zmdi-smartphone');
     }
 
     $columnBlock.find('i.wdt-toggle-show-on-tablet').click(function (e) {
@@ -1474,22 +1470,16 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.hide_on_tablets = 0;
             jQuery(this)
                 .removeClass('inactive')
-                .removeClass('zmdi-smartphone-landscape-lock')
-                .addClass('zmdi-smartphone-landscape');
         } else {
             column.hide_on_tablets = 1;
             jQuery(this)
                 .addClass('inactive')
-                .addClass('zmdi-smartphone-landscape-lock')
-                .removeClass('zmdi-smartphone-landscape');
         }
     });
 
     if (column.hide_on_tablets) {
         $columnBlock.find('i.wdt-toggle-show-on-tablet')
             .addClass('inactive')
-            .addClass('zmdi-smartphone-landscape-lock')
-            .removeClass('zmdi-smartphone-landscape');
     }
 
     /**
@@ -1502,23 +1492,16 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.filter_type = 'text';
             jQuery(this)
                 .removeClass('inactive')
-                .addClass('zmdi-filter-list')
-                .removeClass('zmdi-filter-list-lock')
         } else {
             column.filter_type = 'none';
             jQuery(this)
                 .addClass('inactive')
-                .removeClass('zmdi-filter-list')
-                .addClass('zmdi-filter-list-lock');
-
         }
     });
 
     if (column.filter_type == 'none') {
         $columnBlock.find('i.wdt-toggle-show-filters')
             .addClass('inactive')
-            .removeClass('zmdi-filter-list')
-            .addClass('zmdi-filter-list-lock');
     }
 
     /**
@@ -1531,14 +1514,10 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.sorting = 1;
             jQuery(this)
                 .removeClass('inactive')
-                .addClass('zmdi-sort-asc')
-                .removeClass('zmdi-sort-asc-lock');
         } else {
             column.sorting = 0;
             jQuery(this)
                 .addClass('inactive')
-                .removeClass('zmdi-sort-asc')
-                .addClass('zmdi-sort-asc-lock');
 
         }
     });
@@ -1546,8 +1525,6 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
     if (!column.sorting) {
         $columnBlock.find('i.wdt-toggle-show-sorting')
             .addClass('inactive')
-            .removeClass('zmdi-sort-asc')
-            .addClass('zmdi-sort-asc-lock');
     }
 
     /**
@@ -1560,22 +1537,16 @@ WDTColumn.prototype.renderSmallColumnBlock = function (columnIndex) {
             column.editor_type = 'text';
             jQuery(this)
                 .removeClass('inactive')
-                .addClass('zmdi-edit')
-                .removeClass('zmdi-edit-lock');
         } else {
             column.editor_type = 'none';
             jQuery(this)
                 .addClass('inactive')
-                .removeClass('zmdi-edit')
-                .addClass('zmdi-edit-lock');
         }
     });
 
     if (column.editor_type == 'none') {
         $columnBlock.find('i.wdt-toggle-enable-editing')
             .addClass('inactive')
-            .removeClass('zmdi-edit')
-            .addClass('zmdi-edit-lock');
     }
 
     if ( typeof callbackExtendSmallBlock !== 'undefined' ) {
